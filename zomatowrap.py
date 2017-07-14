@@ -81,8 +81,49 @@ class ZomatoApi():
         return self.response.json()
 
 
+    def GetResturantTypes(self,city_id = 280):
+        self.ResType = self.base_url + "establishments"
+        self.city_id = city_id
+        if self.city_id is None:
+            return "Error! Can't be None"
+
+        self.params = {
+            'city_id':"{}".format(self.city_id)
+        }
+        self.response = requests.get(self.ResType,headers=self.headers,params=self.params)
+        return self.response.json()
+
+    def GetLocationUsingCoords(self,coords = [None,None]):
+        self.coords = coords
+        self.coord_url = self.base_url + "geocode"
+
+        if self.coords is None:
+            return "Error! coords takes a list"
+        self.params = {
+            'lat':"{}".format(self.coords[0]),
+            'lon':"{}".format(self.coords[1])
+        }
+        self.response = requests.get(self.coord_url,headers=self.headers,params=self.params)
+        return self.response.json()
+
+
+    def GetLocations(self,q = "London",max_count = 5):
+        self.q = q # query string
+        self.max_count = max_count
+        self.loc_url = self.base_url + "location"
+
+        if self.coords is None:
+            return "Error! Location cannot be None"
+
+        self.params = {
+            'q'     :"{}".format(self.q),
+            'count' :"{}".format(self.max_count)
+        }
+        self.response = requests.get(self.loc_url,headers=self.headers,params=self.params)
+        return self.response.json()
+
 if __name__ == '__main__':
     key = credentials['API_KEY']
     app = ZomatoApi(key)
-    v = app.GetCuisines(280,max_count = 3)
+    v = app.GetResturantTypes(280)
     print(v)
