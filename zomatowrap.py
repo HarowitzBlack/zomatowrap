@@ -5,7 +5,7 @@ import requests
 
 credentials = {
                 # zomato api key to access taco resturant data
-                "API_KEY":"<key>"
+                "API_KEY":"<api>"
 }
 
 class ZomatoApi():
@@ -81,7 +81,7 @@ class ZomatoApi():
         return self.response.json()
 
 
-    def GetResturantTypes(self,city_id = 280):
+    def GetRestaurantTypes(self,city_id = 280):
         self.ResType = self.base_url + "establishments"
         self.city_id = city_id
         if self.city_id is None:
@@ -122,8 +122,55 @@ class ZomatoApi():
         self.response = requests.get(self.loc_url,headers=self.headers,params=self.params)
         return self.response.json()
 
+    def GetLocationsDetails(self,entity_id=None,entity_type=None):
+        self.entity_id,self.entity_type = entity_id,entity_type
+        self.LocDet = self.base_url + "location_details"
+        if self.entity_id == None or self.entity_type == None:
+            return "entity_id and entity_type can't be None"
+        self.params = {
+            'entity_id'     :"{}".format(self.entity_id),
+            'entity_type' :"{}".format(self.entity_type)
+        }
+        self.response = requests.get(self.LocDet,headers = self.headers,params=self.params)
+        return self.response.json()
+
+    def GetDailyMenu(self,res_id=None):
+        # res_id is the restaurant id of the restaurant that you're requesting the menu from.
+        self.res_id = res_id
+        if self.res_id is None:
+            return "Error! res_id can't be None"
+        self.dailyMenu = self.base_url + "dailymenu"
+        self.params = {
+            'res_id'  : "{}".format(self.res_id)
+        }
+        self.response = requests.get(self.dailyMenu,headers=self.headers,params=self.params)
+        return self.response.json()
+
+    def GetRestaurantDetails(self,res_id=None):
+        # needs resturant id
+        self.res_id = res_id
+        if self.res_id is None:
+            return "res_id cannot be None"
+        self.resDet = self.base_url + "restautant"
+        self.params = {
+            'res_id' : "{}".format(self.res_id)
+        }
+        self.response = requests.get(self.resDet,headers=self.headers,params=self.params)
+        return self.response.json()
+
+    def GetRestaurantReviews(self,res_id=None)
+        # needs resturant id
+        self.res_id = res_id
+        if self.res_id is None:
+            return "res_id cannot be None"
+        self.resRev = self.base_url + "reviews"
+        self.params = {
+            'res_id' : "{}".format(self.res_id)
+        }
+        self.response = requests.get(self.resRev,headers=self.headers,params=self.params)
+        return self.response.json()
+
 if __name__ == '__main__':
-    key = credentials['API_KEY']
-    app = ZomatoApi(key)
-    v = app.GetResturantTypes(280)
+    app = ZomatoApi(credentials['API_KEY'])
+    v = app.GetResaturantTypes(280)
     print(v)
